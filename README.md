@@ -50,16 +50,16 @@ Also provided, but not necessary to get Oculus up and running are some utility s
 
 - Misc Utility Scripts
 
-##ElasticSearch
+## ElasticSearch
 
 For Oculus to function properly, you will ideally need at least two ElasticSearch servers in separate clusters, which Oculus will rotate through. Oculus requires the addition of custom scoring plugins, but otherwise uses ElasticSearch out of the box.
 
-###Recommended Server Spec
+### Recommended Server Spec
 - At least 8GB RAM
 - Quad Core Xeon 5620 CPU or comparable
 - 1GB disk space
 
-###Installation and Plugin Build (Applies to all cluster nodes)
+### Installation and Plugin Build (Applies to all cluster nodes)
 - Install the Java JDK (on CentOS, this is ```yum install jdk```)
 - Download and extract elasticsearch from ```http://www.elasticsearch.org/download/``` - here we'll assume /opt/elasticsearch
     - Oculus has been tested with version 0.90  - it should currently not build on version 0.90 and above
@@ -74,7 +74,7 @@ For Oculus to function properly, you will ideally need at least two ElasticSearc
 - If successful, this will create a file called ```OculusPlugins.jar```
 - copy ```OculusPlugins.jar``` to ```/opt/elasticsearch/lib/OculusPlugins.jar```
 
-###Configuration
+### Configuration
 
 As noted above, the Elasticsearch servers which Oculus uses cannot be in the same cluster - Oculus needs at least two seperate servers (and clusters) to rotate between. To that end, the ElasticSearch configuration file needs to have the Cluster name and Node name manually specified. For simplicity, these instructions assume that you're going to name each cluster and node after the hostname of the server, but any name can be used.
 
@@ -95,7 +95,7 @@ script.native:
   oculus_dtw.type: com.etsy.oculus.tsscorers.DTWScriptFactory
 ```
 
-###Start Up ElasticSearch
+### Start Up ElasticSearch
 Once you've installed ElasticSearch, built the Oculus scoring plugins and edited the configuration file, you can start it up by running the following command from ```/opt/elasticsearch```
 
 ```
@@ -117,16 +117,16 @@ You can verify that Elasticsearch is up and running by visiting ```http://locaho
 }
 ```
 
-##Workers
+## Workers
 
 Oculus' import and backend functions are handled by a cluster of Worker boxes running Resque (https://github.com/resque/resque). You'll need a Worker Master, running Redis (the central data store used by Resque) and some resque workers, and optionally some more Worker Slave boxes running extra Resque workers.
 
-###Recommended Server Spec
+### Recommended Server Spec
 - At least 12GB RAM
 - Quad Core Xeon 5620 CPU or comparable
 - 1GB disk space
 
-###Worker Master Box
+### Worker Master Box
 
 The first worker box you'll need to get up and running is the Master box running Redis.
 
@@ -150,7 +150,7 @@ Here's how to get it up and running:
     - You can start up a Resque web console to monitor what's going on by running ```resque-web``` from the binary directory of the resque Gem (for example ```/usr/lib64/ruby/gems/1.9.1/gems/resque-1.23.0/bin/resque-web```)
     - If you want to edit the number of Resque workers run on the master box, edit lines 21 and 22 of the Rakefile (changing the number '22' to whatever you like, then run ```rake resque:restart_workers```
 
-###Worker Slave Box(es) - Optional
+### Worker Slave Box(es) - Optional
 
 Once you've got your Worker Master set up and running Redis, you can also optionally set up any number of Worker Slave boxes (which just run Resque Workers) you want - we run 3 at Etsy.
 
@@ -165,7 +165,7 @@ Once you've got your Worker Master set up and running Redis, you can also option
 - Optional Steps
     - If you want to edit the number of Resque workers run on this box, edit lines 21 and 22 of the Rakefile (changing the number '22' to whatever you like, then run ```rake resque:restart_workers```
 
-##Oculus Config File
+## Oculus Config File
 
 Now that you've got your Elasticsearch servers all prepped and your Workers happily waiting for work, before we can start chucking data Oculus the next step is to set up the Oculus config file - ```config/config.yml```. Here's a sample config file:
 
@@ -203,7 +203,7 @@ You can ignore the other settings under elasticsearch for now - Have a look at t
 
 You should make sure that your config file is pushed out to all of your Oculus servers.
 
-##Skyline Import Script and Cronjob
+## Skyline Import Script and Cronjob
 
 Now that you've got your search servers all ready to populate, you'll need to set up the script that imports data from Skyline into your search indexes. This can run on any of the servers you're using to run Oculus.
 
@@ -244,7 +244,7 @@ Now that you've got your search servers all ready to populate, you'll need to se
 
 - Your Oculus search index will now be updated from Skyline every 2 minutes.
 
-##Web App Install
+## Web App Install
 
 Now that we've got all of the moving parts set up and started updating our search indexes with metric data, the final step is to get the Oculus front end web app set up.
 
